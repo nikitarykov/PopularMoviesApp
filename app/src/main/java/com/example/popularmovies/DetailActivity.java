@@ -11,15 +11,25 @@ import com.squareup.picasso.Picasso;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_MOVIE = "extra_movie";
 
+    @BindView(R.id.tv_title) TextView titleTextView;
+    @BindView(R.id.tv_overview) TextView overviewTextView;
+    @BindView(R.id.tv_release_date) TextView releaseDateTextView;
+    @BindView(R.id.tv_votes_average) TextView votesAverageTextView;
+    @BindView(R.id.iv_poster) ImageView posterImageView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+        ButterKnife.bind(this);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Intent intent = getIntent();
         if (intent == null) {
@@ -30,12 +40,6 @@ public class DetailActivity extends AppCompatActivity {
         if (movie == null) {
             closeOnError();
         }
-
-        TextView titleTextView = findViewById(R.id.tv_title);
-        TextView overviewTextView = findViewById(R.id.tv_overview);
-        TextView releaseDateTextView = findViewById(R.id.tv_release_date);
-        TextView votesAverageTextView = findViewById(R.id.tv_votes_average);
-        ImageView posterImageView = findViewById(R.id.iv_poster);
 
         titleTextView.setText(movie.getTitle());
         overviewTextView.setText(movie.getOverview());

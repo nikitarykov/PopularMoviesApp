@@ -3,6 +3,10 @@ package com.example.popularmovies;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindArray;
+import butterknife.BindString;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,34 +33,31 @@ import static com.example.popularmovies.DetailActivity.EXTRA_MOVIE;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
         MovieAdapter.MovieAdapterOnClickHandler {
 
-    private RecyclerView recyclerView;
-    private TextView errorMessageTextView;
-    private ProgressBar loadingIndicator;
+    private static final String API_KEY = BuildConfig.API_KEY;
+
+    @BindView(R.id.recyclerview_movies) RecyclerView recyclerView;
+    @BindView(R.id.tv_error_message) TextView errorMessageTextView;
+    @BindView(R.id.pb_loading_indicator) ProgressBar loadingIndicator;
+
+    @BindArray(R.array.sort_types) String[] sortTypes;
+    @BindString(R.string.highest_rated_sort) String highestRatedSort;
+    @BindString(R.string.most_popular_sort) String mostPopularSort;
+
     private MovieAdapter movieAdapter;
     private MovieDatabaseApi movieDatabaseApi;
-    private String[] sortTypes;
-    private String mostPopularSort;
-    private String highestRatedSort;
-    private String movieDatabaseApiKey;
     private Callback<MoviesListResponse> apiCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        recyclerView = findViewById(R.id.recyclerview_movies);
-        errorMessageTextView = findViewById(R.id.tv_error_message);
-        loadingIndicator = findViewById(R.id.pb_loading_indicator);
+        ButterKnife.bind(this);
 
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         movieAdapter = new MovieAdapter(this);
         recyclerView.setAdapter(movieAdapter);
-        sortTypes = getResources().getStringArray(R.array.sort_types);
-        mostPopularSort = getString(R.string.most_popular_sort);
-        highestRatedSort = getString(R.string.highest_rated_sort);
-        movieDatabaseApiKey = getString(R.string.movie_db_api_key);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(getString(R.string.base_movie_db_url))
@@ -117,9 +118,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private void loadMovies(String sortType) {
         loadingIndicator.setVisibility(View.VISIBLE);
         if (sortType.equals(mostPopularSort)) {
-            movieDatabaseApi.getPopularMovies(movieDatabaseApiKey).enqueue(apiCallback);
+            movieDatabaseApi.getPopularMovies(API_KEY).enqueue(apiCallback);
         } else if (sortType.equals(highestRatedSort)) {
-            movieDatabaseApi.getTopRatedMovies(movieDatabaseApiKey).enqueue(apiCallback);
+            movieDatabaseApi.getTopRatedMovies(API_KEY).enqueue(apiCallback);
         }
     }
 

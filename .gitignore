@@ -6,4 +6,4 @@
 /build
 /captures
 .externalNativeBuild
-**/*/res/values/secrets.xml
+/gradle.properties
