@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="sort_order">Sort order</string>
+    <string name="error_message">An error has occurred.</string>
+    <string name="base_movie_db_url">http://api.themoviedb.org/3/</string>
+    <string name="base_image_url">http://image.tmdb.org/t/p/w185/</string>
+    <string name="highest_rated_sort">Highest rated</string>
+    <string name="most_popular_sort">Most popular</string>
+    <string name="detail_error_message">Movie data not available</string>
+    <string name="votes_average_format">%.1f / 10</string>
+    <string name="detail_activity_name">MovieDetail</string>
+    <string-array name="sort_types">
+        <item>@string/highest_rated_sort</item>
+        <item>@string/most_popular_sort</item>
+    </string-array>
+</resources>
