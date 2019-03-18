@@ -6,13 +6,27 @@ import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
+@Entity(tableName = "movies")
 public class Movie implements Parcelable {
+    @PrimaryKey
+    private Integer id;
     private String title;
     private String releaseDate;
     private String posterPath;
     private Double votesAverage;
     private String overview;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -64,6 +78,7 @@ public class Movie implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(id);
         parcel.writeString(title);
         parcel.writeString(releaseDate);
         parcel.writeString(posterPath);
@@ -76,6 +91,7 @@ public class Movie implements Parcelable {
         @Override
         public Movie createFromParcel(Parcel parcel) {
             Movie movie = new Movie();
+            movie.setId(parcel.readInt());
             movie.setTitle(parcel.readString());
             movie.setReleaseDate(parcel.readString());
             movie.setPosterPath(parcel.readString());

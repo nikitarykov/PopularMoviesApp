@@ -1,4 +1,4 @@
-package com.example.popularmovies;
+package com.example.popularmovies.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.popularmovies.R;
 import com.example.popularmovies.domain.Movie;
 import com.squareup.picasso.Picasso;
 
@@ -29,9 +30,9 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
 
     public class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public ImageView imageView;
+        final ImageView imageView;
 
-        public MovieViewHolder(@NonNull View itemView) {
+        MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.iv_movie_poster);
             itemView.setOnClickListener(this);
@@ -60,6 +61,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         String imagePath = context.getString(R.string.base_image_url) + movie.getPosterPath();
         Picasso.with(context)
                 .load(imagePath)
+                .resize(200, 300)
                 .into(holder.imageView);
     }
 

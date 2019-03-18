@@ -6,11 +6,19 @@
     <string name="base_image_url">http://image.tmdb.org/t/p/w185/</string>
     <string name="highest_rated_sort">Highest rated</string>
     <string name="most_popular_sort">Most popular</string>
+    <string name="favorite_sort">Favorite</string>
     <string name="detail_error_message">Movie data not available</string>
     <string name="votes_average_format">%.1f / 10</string>
     <string name="detail_activity_name">MovieDetail</string>
+    <string name="favorite_button_description">Favorite this movie</string>
+    <string name="movie_poster_description">Movie poster</string>
+    <string name="base_youtube_uri">http://www.youtube.com/watch</string>
+    <string name="related_videos">Related videos</string>
+    <string name="by">"by "</string>
+    <string name="reviews">User reviews</string>
     <string-array name="sort_types">
         <item>@string/highest_rated_sort</item>
         <item>@string/most_popular_sort</item>
+        <item>@string/favorite_sort</item>
     </string-array>
 </resources>

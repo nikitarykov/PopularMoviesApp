@@ -1,17 +1,13 @@
 package com.example.popularmovies;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindArray;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,15 +21,18 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.popularmovies.adapter.MovieAdapter;
 import com.example.popularmovies.domain.Movie;
-import com.example.popularmovies.domain.MoviesListResponse;
+import com.example.popularmovies.domain.SortType;
+import com.example.popularmovies.viewmodel.MainViewModel;
 
 import static com.example.popularmovies.DetailActivity.EXTRA_MOVIE;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
-        MovieAdapter.MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements MovieAdapter.MovieAdapterOnClickHandler {
 
-    private static final String API_KEY = BuildConfig.API_KEY;
+    private static final String SPINNER_SELECTED_POSITION = "spinner-selected-position";
+    private static final int NOT_SELECTED_POSITION = -1;
+    private int selectedPosition = NOT_SELECTED_POSITION;
 
     @BindView(R.id.recyclerview_movies) RecyclerView recyclerView;
     @BindView(R.id.tv_error_message) TextView errorMessageTextView;
@@ -42,10 +41,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @BindArray(R.array.sort_types) String[] sortTypes;
     @BindString(R.string.highest_rated_sort) String highestRatedSort;
     @BindString(R.string.most_popular_sort) String mostPopularSort;
+    @BindString(R.string.favorite_sort) String favoriteSort;
 
     private MovieAdapter movieAdapter;
-    private MovieDatabaseApi movieDatabaseApi;
-    private Callback<MoviesListResponse> apiCallback;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,33 +52,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        if (savedInstanceState != null) {
+            selectedPosition = savedInstanceState.getInt(SPINNER_SELECTED_POSITION);
+        }
+
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         movieAdapter = new MovieAdapter(this);
         recyclerView.setAdapter(movieAdapter);
+        setupViewModel();
+    }
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(getString(R.string.base_movie_db_url))
-                .addConverterFactory(JacksonConverterFactory.create())
-                .build();
-        movieDatabaseApi = retrofit.create(MovieDatabaseApi.class);
-        apiCallback = new Callback<MoviesListResponse>() {
-            @Override
-            public void onResponse(Call<MoviesListResponse> call, Response<MoviesListResponse> response) {
-                if (response.body() == null) {
-                    showErrorMessage();
-                } else {
-                    movieAdapter.setMovies(response.body().getResults());
+    private void setupViewModel() {
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getMovies().observe(this, resource -> {
+            switch (resource.status) {
+                case LOADING: {
+                    loadingIndicator.setVisibility(View.VISIBLE);
+                    break;
+                }
+                case SUCCESS: {
+                    movieAdapter.setMovies(resource.data);
                     recyclerView.scrollToPosition(0);
                     showMoviesGrid();
+                    break;
+                }
+                case ERROR: {
+                    showErrorMessage();
+                    break;
                 }
             }
-            @Override
-            public void onFailure(Call<MoviesListResponse> call, Throwable throwable) {
-                showErrorMessage();
-            }
-        };
+        });
     }
 
     @Override
@@ -92,20 +96,35 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             Spinner spinner = (Spinner) actionView;
             spinner.setAdapter(ArrayAdapter.createFromResource(this,
                     R.array.sort_types, android.R.layout.simple_spinner_item));
-            spinner.setOnItemSelectedListener(this);
+            if (selectedPosition != NOT_SELECTED_POSITION) {
+                spinner.setSelection(selectedPosition);
+                spinner.setTag(R.id.pos, selectedPosition);
+            }
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    Object tag = spinner.getTag(R.id.pos);
+                    // prevent reloading data on configuration changes
+                    if (tag == null || (int) tag != position) {
+                        selectedPosition = position;
+                        String sortType = sortTypes[position];
+                        if (sortType.equals(mostPopularSort)) {
+                            viewModel.setSortType(SortType.MOST_POPULAR);
+                        } else if (sortType.equals(highestRatedSort)) {
+                            viewModel.setSortType(SortType.HIGHEST_RATED);
+                        } else if (sortType.equals(favoriteSort)) {
+                            viewModel.setSortType(SortType.FAVORITE);
+                        }
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+                    // do nothing
+                }
+            });
         }
         return true;
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String sortType = sortTypes[position];
-        loadMovies(sortType);
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        // do nothing
     }
 
     @Override
@@ -115,13 +134,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(intent);
     }
 
-    private void loadMovies(String sortType) {
-        loadingIndicator.setVisibility(View.VISIBLE);
-        if (sortType.equals(mostPopularSort)) {
-            movieDatabaseApi.getPopularMovies(API_KEY).enqueue(apiCallback);
-        } else if (sortType.equals(highestRatedSort)) {
-            movieDatabaseApi.getTopRatedMovies(API_KEY).enqueue(apiCallback);
-        }
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SPINNER_SELECTED_POSITION, selectedPosition);
     }
 
     private void showMoviesGrid() {
