@@ -5,7 +5,7 @@
     <dimen name="video_icon">40dp</dimen>
     <dimen name="poster_height">300dp</dimen>
     <dimen name="video_name_margin">8dp</dimen>
-    <dimen name="movie_detail_text_size">20sp</dimen>
+    <dimen name="simple_text_size">20sp</dimen>
     <dimen name="favorite_button_margin">5dp</dimen>
     <dimen name="movie_title_text_size">50sp</dimen>
     <dimen name="detail_poster_margin">10dp</dimen>

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -8,6 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="simpleTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/simple_text_size</item>
+        <item name="android:layout_margin">@dimen/text_margin</item>
+    </style>
 
+    <style name="labelTextStyle" parent="simpleTextStyle">
+        <item name="android:textStyle">bold</item>
+    </style>
 
 </resources>

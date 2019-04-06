@@ -134,6 +134,7 @@ public class DetailActivity extends AppCompatActivity implements VideoAdapter.Vi
 
         Picasso.with(this)
                 .load(getString(R.string.base_image_url) + movie.getPosterPath())
+                .error(R.drawable.error_image)
                 .into(posterImageView);
     }
 

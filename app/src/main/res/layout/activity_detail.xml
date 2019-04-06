@@ -51,11 +51,8 @@
             app:layout_constraintTop_toBottomOf="@id/tv_release_date"/>
 
         <TextView
+            style="@style/simpleTextStyle"
             android:id="@+id/tv_overview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/movie_detail_text_size"
-            android:layout_margin="@dimen/text_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/iv_poster"/>
@@ -72,13 +69,9 @@
             android:contentDescription="@string/favorite_button_description" />
 
         <TextView
+            style="@style/labelTextStyle"
             android:id="@+id/tv_videos_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/movie_detail_text_size"
-            android:textStyle="bold"
             android:text="@string/related_videos"
-            android:layout_margin="@dimen/text_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_overview"/>
@@ -92,13 +85,9 @@
             app:layout_constraintTop_toBottomOf="@id/tv_videos_label"/>
 
         <TextView
+            style="@style/labelTextStyle"
             android:id="@+id/tv_reviews_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/movie_detail_text_size"
-            android:textStyle="bold"
             android:text="@string/reviews"
-            android:layout_margin="@dimen/text_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recyclerview_videos"/>

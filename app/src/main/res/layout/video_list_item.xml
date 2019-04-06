@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/video_name_margin"
         android:layout_marginStart="@dimen/video_name_margin"
-        android:textSize="@dimen/movie_detail_text_size"
+        android:textSize="@dimen/simple_text_size"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/video_icon"
         app:layout_constraintRight_toRightOf="parent"

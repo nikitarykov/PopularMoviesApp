@@ -13,6 +13,8 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder> {
 
@@ -23,13 +25,12 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewView
 
     public class ReviewViewHolder extends RecyclerView.ViewHolder {
 
-        TextView authorTextView;
-        TextView contentTextView;
+        @BindView(R.id.tv_author) TextView authorTextView;
+        @BindView(R.id.tv_content) TextView contentTextView;
 
         ReviewViewHolder(@NonNull View itemView) {
             super(itemView);
-            authorTextView = itemView.findViewById(R.id.tv_author);
-            contentTextView = itemView.findViewById(R.id.tv_content);
+            ButterKnife.bind(this, itemView);
         }
     }
 
